@@ -13,27 +13,27 @@ class SingleFactorFullStrategy:
     # =========================================================
     def generate_signal(self, timestamp, data, portfolio):
 
-        # 1. Check time
+        # 1️⃣ 时间检查
         if timestamp not in self.factor_df.index:
             return None
 
         row = self.factor_df.loc[timestamp]
 
-        # 2. Check for missing values
+        # 2️⃣ 缺失检查
         if row.isna().all():
-            print("Factor data is missing today")
+            print("今天因子数据缺失")
             return None
 
-        # 3. Select the ETF with the highest factor score
+        # 3️⃣ 选最大因子ETF
         target_etf = row.idxmax()
-        print(f"ETF with the highest factor score today: {target_etf}, value={row[target_etf]}")
+        print(f"今日因子最大ETF: {target_etf}, value={row[target_etf]}")
 
-        # 4. Reduce turnover
+        # 4️⃣ 降低换手
         if self.last_target == target_etf:
-            print("No change; skip rebalancing")
+            print("无变化，不调仓")
             return None
 
         self.last_target = target_etf
 
-        # 5. Return only the ETF (key change)
+        # 5️⃣ 只返回 ETF（关键修改）
         return {"type": "rebalance", "target_etf": target_etf}

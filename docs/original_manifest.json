@@ -1,0 +1,123 @@
+[
+  {
+    "original_path": "ETF轮动/ETF轮动策略.docx",
+    "retained_path": "ETF轮动/ETF_Rotation_Research_EN.docx",
+    "sha256": "5bbb9d2af16d36a7819fd01138dfc6526152c0311befd37f42d4f7475693dbb9",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/ETF轮动策略.docx"
+  },
+  {
+    "original_path": "ETF轮动/analysis/plot_analysis.py",
+    "retained_path": "ETF轮动/analysis/plot_analysis.py",
+    "sha256": "ff2a8542493beb5c7e0049818ad878362ff449f7f480bf386b6d95f619862501",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/analysis/plot_analysis.py",
+    "semantic_sha256": "174f0274617ffe4a47402f33797abb1bf710c30acecedecf5057f533aff723c8"
+  },
+  {
+    "original_path": "ETF轮动/backtest.ipynb",
+    "retained_path": "ETF轮动/backtest.ipynb",
+    "sha256": "8ef07c145df31529f17d76637126a879ba099907996fda27b59be2bfa6265f34",
+    "status": "english_translation_with_original_archive",
+    "original_code_cells_sha256": "95b7b3534aa44fe15e64fd9d1ad304a4f6de46196f82b0a61a30cd93de5f52ca",
+    "archive_path": "archive/originals/ETF轮动/backtest.ipynb",
+    "notebook_semantic_sha256": "916f2bac04019171f97c7ee9a5183f7ff82abde5cf94eae4c3e2537a39078646"
+  },
+  {
+    "original_path": "ETF轮动/backtest2.ipynb",
+    "retained_path": "ETF轮动/backtest2.ipynb",
+    "sha256": "bf5dc6cfc3d7a20fa6318d2f0021ff1bf040f06791e970302c2021ae0b04d400",
+    "status": "english_translation_with_original_archive",
+    "original_code_cells_sha256": "5af896ed409db6bb39913052295a0c8e419111cd9efa266e551232850daa79e7",
+    "archive_path": "archive/originals/ETF轮动/backtest2.ipynb",
+    "notebook_semantic_sha256": "d493564f2b5831aa10909cd56e4b3a3b5bdb472af276b5efbb37a5a5b5f83c4e"
+  },
+  {
+    "original_path": "ETF轮动/data_processing.ipynb",
+    "retained_path": "ETF轮动/data_processing.ipynb",
+    "sha256": "7e15fa79c72192f82aab7bd47194cb58c3b7e448a6b6b6d2b190b11eb4c2324c",
+    "status": "english_translation_with_original_archive",
+    "original_code_cells_sha256": "99e7b86eaae296d2cdcf711c78a472876a4f6a8ab4f9d4d75d7d6ddabb32f298",
+    "archive_path": "archive/originals/ETF轮动/data_processing.ipynb",
+    "notebook_semantic_sha256": "c7b0b540df6d3949871297887a3ce79d3784716ad8f35e291bf54d6f59bd04d7"
+  },
+  {
+    "original_path": "ETF轮动/engine/delay_engine.py",
+    "retained_path": "ETF轮动/engine/delay_engine.py",
+    "sha256": "a5377c5a16a3ca304b66f0c0108de893041a14326b5429f0c2c7dcd4b180f00f",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/engine/delay_engine.py",
+    "semantic_sha256": "57a64aaf73db19880892a9d56239b7efe47fb4f3d6e60f62cdbceb68a0a29f08"
+  },
+  {
+    "original_path": "ETF轮动/engine/delay_full_engine.py",
+    "retained_path": "ETF轮动/engine/delay_full_engine.py",
+    "sha256": "7d382750359cac78f9f914e1adbb8985879559032dc8dc8665491a106121d862",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/engine/delay_full_engine.py",
+    "semantic_sha256": "997b1d6191e4ce86a9b56a3cb9cfebdcdb074dbe3b6cc5058c7db93c80081fb1"
+  },
+  {
+    "original_path": "ETF轮动/engine/instant_engine.py",
+    "retained_path": "ETF轮动/engine/instant_engine.py",
+    "sha256": "f573c7a34980c623e07c6fe6c838b238302284d9f490ce8d2ac4e8bc90da4bd5",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/engine/instant_engine.py",
+    "semantic_sha256": "a0f169ec70be647d1fbc169f7bf8c1fe8883a1e05906c68b6302cbe09e86f962"
+  },
+  {
+    "original_path": "ETF轮动/engine/instant_full_engine.py",
+    "retained_path": "ETF轮动/engine/instant_full_engine.py",
+    "sha256": "de4dfba62808ffe99c790ab52cf0be492137fbe684e4157cf5ec0c978ed2f5e3",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/engine/instant_full_engine.py",
+    "semantic_sha256": "8b6afe40056ed2a6da42ee39a78d7e74b3b51f299443de60b237789560020bd7"
+  },
+  {
+    "original_path": "ETF轮动/portfolio/portfolio.py",
+    "retained_path": "ETF轮动/portfolio/portfolio.py",
+    "sha256": "a7889e71102fe08b18460e745881e7a8a41283083d384dd572fabaac6bea7b0a",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/portfolio/portfolio.py",
+    "semantic_sha256": "b0f378304c90a3cc7df7042bde9574593a32cdfc0ce8b3711405fb021ce99baf"
+  },
+  {
+    "original_path": "ETF轮动/strategy/single_factor_abs_stp_strategy.py",
+    "retained_path": "ETF轮动/strategy/single_factor_abs_stp_strategy.py",
+    "sha256": "5575b05d38697ee3b621664f3a4d8a24b1ec912962b740f076254b8386b8e279",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/strategy/single_factor_abs_stp_strategy.py",
+    "semantic_sha256": "29c82bdd1fba7ef14579f71ca3e9f9b07411ba54a1ec2361fafa7401a7f95d0d"
+  },
+  {
+    "original_path": "ETF轮动/strategy/single_factor_full_stploss_strategy.py",
+    "retained_path": "ETF轮动/strategy/single_factor_full_stploss_strategy.py",
+    "sha256": "0689441af6efbea35ef374cde397afc1f39722c95d7864a01a1a483baab4b748",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/strategy/single_factor_full_stploss_strategy.py",
+    "semantic_sha256": "03478615e1972b240ac4857bff8b85eba17cdaf2293e4e2041e4e948bacbfdae"
+  },
+  {
+    "original_path": "ETF轮动/strategy/single_factor_full_strategy.py",
+    "retained_path": "ETF轮动/strategy/single_factor_full_strategy.py",
+    "sha256": "e8932908f9d94b4861f0a4931a4dfc0d9e6610b27bf45069fedff6492dd1a170",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/strategy/single_factor_full_strategy.py",
+    "semantic_sha256": "c63f705e3d90df63e22a98ddaa636fc64d6bb0594a41fd2823fa988a0129d513"
+  },
+  {
+    "original_path": "ETF轮动/strategy/single_factor_strategy.py",
+    "retained_path": "ETF轮动/strategy/single_factor_strategy.py",
+    "sha256": "a9ed0baa534fbac20fab8668e20eb239a3a605179aa424a9f37654402891e680",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/ETF轮动/strategy/single_factor_strategy.py",
+    "semantic_sha256": "3db0b82cd3f86cd476a2b7f81d467c6eaff1ee4391bf05c1f3d53883fe0df646"
+  },
+  {
+    "original_path": "README.md",
+    "retained_path": "docs/ORIGINAL_README.md",
+    "sha256": "ad0cf737f0df85facbb23b8d4015ab9caa5084b37b81492cb3e763f904492095",
+    "status": "english_translation_with_original_archive",
+    "archive_path": "archive/originals/README.md"
+  }
+]

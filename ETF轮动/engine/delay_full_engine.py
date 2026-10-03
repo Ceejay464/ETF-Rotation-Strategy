@@ -15,7 +15,7 @@ class DelayFullEngine:
         self.timeline = self._build_timeline()
 
         # =========================
-        # 延迟信号缓存
+        # Delayed signal cache
         # =========================
         self.pending_target = None
 
@@ -71,17 +71,17 @@ class DelayFullEngine:
             open_price_dict = {etf: snapshot[etf]["开盘价"] for etf in snapshot}
 
             # =====================================================
-            # 2️⃣ 执行上一天信号（全仓）
+            # 2. Execute the previous day's signal with full allocation
             # =====================================================
             if self.pending_target is not None:
                 if self.pending_target["type"] == "rebalance":
-                    print("重新开仓")
+                    print("Re-enter")
                     etf = self.pending_target["target_etf"]
                     self.portfolio.full_rebalance(timestamp=date, target_etf=etf, price_dict=open_price_dict)
                     self.pending_target = None
 
                 else:
-                    print("回撤太大强制平仓")
+                    print("Excessive drawdown; force close")
                     orders = self.pending_target["orders"]
                     for order in orders:
                         etf = order["etf"]
@@ -91,7 +91,7 @@ class DelayFullEngine:
                         self.pending_target = None
 
             # =====================================================
-            # 3️⃣ 当前生成信号（保存，下一天执行）
+            # 3. Generate and store the current signal for the next day
             # =====================================================
             signal = self.strategy.generate_signal( timestamp=date, data=snapshot, portfolio=self.portfolio)
 

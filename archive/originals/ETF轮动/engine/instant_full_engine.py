@@ -1,9 +1,10 @@
 import pandas as pd
 
 
-class InstantEngine:
+class InstantFullEngine:
 
     def __init__(self, data, strategy, portfolio, start=None, end=None):
+
         self.data = data
         self.strategy = strategy
         self.portfolio = portfolio
@@ -16,31 +17,30 @@ class InstantEngine:
         self.results = []
 
     # =========================================================
-    # build timeline with filter
+    # timeline
     # =========================================================
     def _build_timeline(self):
 
         timeline = sorted(list(next(iter(self.data.values())).index))
-
-        # Convert to Timestamp to avoid strings
         timeline = [pd.Timestamp(t) for t in timeline]
 
-        if self.start is not None:
+        if self.start:
             timeline = [t for t in timeline if t >= self.start]
 
-        if self.end is not None:
+        if self.end:
             timeline = [t for t in timeline if t <= self.end]
 
         return timeline
 
     # =========================================================
-    # get snapshot
+    # snapshot
     # =========================================================
     def get_snapshot(self, date):
 
         snapshot = {}
 
         for name, df in self.data.items():
+
             if date in df.index:
                 snapshot[name] = df.loc[date]
 
@@ -52,29 +52,65 @@ class InstantEngine:
     def run(self):
 
         for date in self.timeline:
-            print(date)
+
             snapshot = self.get_snapshot(date)
 
             if not snapshot:
                 continue
 
-            price_dict = {etf: snapshot[etf]["收盘价"] for etf in snapshot}
+            # =========================
+            # price dict
+            # =========================
+            price_dict = {
+                etf: snapshot[etf]["收盘价"]
+                for etf in snapshot
+            }
 
-            # ===== strategy =====
-            orders = self.strategy.generate_signal(timestamp=date, data=snapshot, portfolio=self.portfolio)
+            # =========================
+            # strategy signal
+            # =========================
+            signal = self.strategy.generate_signal(
+                timestamp=date,
+                data=snapshot,
+                portfolio=self.portfolio
+            )
 
-            # ===== execute at CLOSE =====
-            for order in orders:
+            # =========================
+            # handle empty signal
+            # =========================
+            if not signal:
+                continue
 
+            target_etf = signal[0]["etf"]
+
+            # =========================
+            # FULL REBALANCE (instant)
+            # =========================
+            self.portfolio.close_all(date, price_dict)
+
+            # buy target fully
+            price = price_dict[target_etf]
+
+            trade_price = price * (1 + self.portfolio.etf_slippage)
+            cost_per_unit = trade_price * (1 + self.portfolio.etf_cost_rate)
+
+            qty = int(self.portfolio.cash / cost_per_unit)
+
+            if qty > 0:
                 self.portfolio.update_position(
                     timestamp=date,
-                    etf_name=order["etf"],
-                    quantity=order["quantity"],
-                    price=price_dict[order["etf"]]
+                    etf_name=target_etf,
+                    quantity=qty,
+                    price=price
                 )
 
-            # ===== equity =====
-            equity = self.portfolio.get_equity(timestamp=date, price_dict=price_dict)
+            # =========================
+            # equity
+            # =========================
+            equity = self.portfolio.get_equity(
+                timestamp=date,
+                price_dict=price_dict
+            )
 
             self.results.append({
                 "timestamp": date,

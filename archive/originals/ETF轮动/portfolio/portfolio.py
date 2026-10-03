@@ -27,10 +27,10 @@ class Portfolio:
     def update_position(self, timestamp, etf_name, quantity, price):
 
         if price is None or pd.isna(price):
-            print("ETF price unavailable; trade failed!")
+            print("未查询到ETF价格，交易失败！")
             return
 
-        print(f"Position change：{etf_name}Position change：{quantity}")
+        print(f"仓位变化：{etf_name}仓位变化：{quantity}")
         # Slippage
         if quantity > 0:
             trade_price = price * (1 + self.etf_slippage)
@@ -104,7 +104,7 @@ class Portfolio:
     
     def full_rebalance(self, timestamp, target_etf, price_dict):
 
-        # 1. Close all positions
+        # 1️⃣ 清仓所有持仓
         for etf in list(self.positions.keys()):
 
             qty = self.positions[etf]
@@ -116,10 +116,10 @@ class Portfolio:
             if qty != 0:
                 self.update_position(timestamp=timestamp, etf_name=etf, quantity=-qty, price=price)
 
-        # 2. Use all available cash to buy the target ETF
+        # 2️⃣ 用全部现金买目标ETF
         price = price_dict[target_etf]
         if price is None or pd.isna(price):
-            print("No prices supplied today")
+            print("今天无价格传入")
             return
 
         trade_price = price * (1 + self.etf_slippage)
@@ -133,21 +133,21 @@ class Portfolio:
 
     def drawdown_series(self, equity, window=25):
 
-        # 1. Initialize storage containers
+        # 1. 初始化存储容器
         if not hasattr(self, "historical_highest"):
             self.historical_highest = equity
 
         if not hasattr(self, "dd_series"):
             self.dd_series = []
 
-        # 2. Update the historical equity peak
+        # 2. 更新历史最高净值
         if equity > self.historical_highest:
             self.historical_highest = equity
 
-        # 3. Calculate current drawdown
+        # 3. 计算当前回撤
         dd = (self.historical_highest - equity) / self.historical_highest
 
-        # 4. Record time series
+        # 4. 记录序列
         if dd > 0:
             self.dd_series.append(dd)
 

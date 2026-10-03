@@ -2,35 +2,35 @@ import pandas as pd
 import numpy as np
 
 
-class SingleFactorFullStpLossStrategy:
+class SingleFactorAbsStpStrategy:
 
-    def __init__(self, factor_df, max_drawdown_threshold=0.90, dd_window=252, dd_breach_days=3, cooldown_days=2):
+    def __init__(self, factor_df, dd_breach_days=3, cooldown_days=2, dd_window=252, abs_dd_threshold=0.1):
 
         self.factor_df = factor_df
         self.last_target = None
 
-        # Risk control parameters
-        self.max_drawdown_threshold = max_drawdown_threshold
+        # 风控参数
+        self.abs_dd_threshold = abs_dd_threshold
         self.dd_window = dd_window
-        self.dd_breach_days = dd_breach_days # Close only after consecutive closing signals
+        self.dd_breach_days = dd_breach_days # 连续发出平仓信号才进行平仓
         self.cooldown_days_default = cooldown_days
 
-        # State machine
+        # 状态机
         self.stop_flag = False
         self.cooldown_days = 0
         self.stop_trigger_date = None
 
-        # Consecutive trigger counter
+        # 连续触发计数
         self.dd_breach_count = 0
 
     # =========================================================
-    # Main signal function
+    # 主信号函数
     # =========================================================
     def generate_signal(self, timestamp, data, portfolio):
         
         orders = []
         # =====================================================
-        # 1. Update equity and drawdown series from the portfolio
+        # 1. 更新 equity + drawdown series（从 portfolio）
         # =====================================================
         snapshot = data
         close_price_dict = {etf: snapshot[etf]["收盘价"] for etf in snapshot}
@@ -38,43 +38,42 @@ class SingleFactorFullStpLossStrategy:
 
         dd_series, current_dd = portfolio.drawdown_series(equity, window=self.dd_window)
 
-        # Rolling check over the most recent window
+        # rolling 判断（最近 window）
         recent_dd = dd_series
 
         # =====================================================
-        # 4. Cooldown period
+        # 4. 冷却期
         # =====================================================
         if self.stop_flag:
 
             self.cooldown_days -= 1
 
-            print(f"Cooldown remaining {self.cooldown_days}  days")
+            print(f"冷却期剩余 {self.cooldown_days} 天")
 
             if self.cooldown_days > 0:
                 return None
 
-            # Cooldown ends
-            print("Cooldown ended; resume trading")
+            # 冷却结束
+            print("冷却结束，恢复交易")
 
             self.stop_flag = False
 
         # =====================================================
-        # 2. Risk controls with consecutive triggers
+        # 2. 风控逻辑（连续触发）
         # =====================================================
         if len(recent_dd) >= self.dd_window:
-            threshold = np.quantile(dd_series, self.max_drawdown_threshold)
 
-            if current_dd > threshold:
+            if current_dd > self.abs_dd_threshold:
                 self.dd_breach_count += 1
             else:
                 self.dd_breach_count = 0
 
         # =====================================================
-        # 3. Trigger stop loss
+        # 3. 触发止损
         # =====================================================
         if self.dd_breach_count >= self.dd_breach_days:
 
-            print(f"[RISK OFF] Consecutive {self.dd_breach_count}  days of excessive drawdown; close positions")
+            print(f"[RISK OFF] 连续 {self.dd_breach_count} 天回撤过大，平仓")
 
             self.stop_flag = True
             self.cooldown_days = self.cooldown_days_default
@@ -91,7 +90,7 @@ class SingleFactorFullStpLossStrategy:
             return {"type": "risk_off", "orders": orders}
 
         # =====================================================
-        # 5. Normal factor logic
+        # 5. 正常因子逻辑
         # =====================================================
         if timestamp not in self.factor_df.index:
             return None
@@ -103,7 +102,7 @@ class SingleFactorFullStpLossStrategy:
 
         target_etf = row.idxmax()
 
-        print(f"ETF with the highest factor score today: {target_etf}, value={row[target_etf]}")
+        print(f"今日因子最大ETF: {target_etf}, value={row[target_etf]}")
 
         if self.last_target == target_etf:
             return None

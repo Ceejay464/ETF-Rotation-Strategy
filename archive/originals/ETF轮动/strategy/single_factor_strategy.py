@@ -11,7 +11,7 @@ class SingleFactorStrategy:
             values = pct change
 
         target_qty:
-            Target position quantity per trade
+            每次目标持仓数量
         """
         self.factor_df = factor_df
         self.target_qty = target_qty
@@ -23,39 +23,39 @@ class SingleFactorStrategy:
     # =========================================================
     def generate_signal(self, timestamp, data, portfolio):
 
-        # Returns for all ETFs on the current date
+        # 当前日期的所有ETF涨跌幅
         if timestamp not in self.factor_df.index:
             return []
 
         row = self.factor_df.loc[timestamp]
 
-        # If all values are NaN
+        # 如果全是 NaN
         if row.isna().all():
-            print("Factor data is missing today")
+            print("今天因子数据缺失")
             return []
 
         # =====================================================
-        # 1. Select the ETF with the largest gain
+        # 1️⃣ 选涨幅最大的ETF
         # =====================================================
         target_etf = row.idxmax()
-        print(f"ETF with the highest factor score today：{target_etf}; factor score：{row[target_etf]}")
+        print(f"今日因子最大etf为：{target_etf}，其因子为：{row[target_etf]}")
 
-        # Do not trade when unchanged, reducing turnover
+        # 如果没有变化，不交易（降低换手）
         if self.last_target == target_etf:
-            print("Factor ranking unchanged; no trade")
+            print("因子相对大小没有变化，不交易")
             return []
 
         self.last_target = target_etf
 
         # =====================================================
-        # 2. Current positions
+        # 2️⃣ 当前持仓
         # =====================================================
         current_positions = portfolio.get_positions()
 
         orders = []
 
         # =====================================================
-        # 3. Close all non-target ETF positions first
+        # 3️⃣ 先平掉所有非目标ETF
         # =====================================================
         for etf, qty in current_positions.items():
 
@@ -67,7 +67,7 @@ class SingleFactorStrategy:
                 })
 
         # =====================================================
-        # 4. Open the target ETF position using the parameters
+        # 4️⃣ 开仓目标ETF（使用参数）
         # =====================================================
         orders.append({
             "etf": target_etf,

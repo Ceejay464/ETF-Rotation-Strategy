@@ -75,7 +75,7 @@ def build_trade_pairs(df):
     df = df.copy()
 
     # =========================
-    # 1. Basic processing
+    # 1. 基础处理
     # =========================
     df["timestamp"] = pd.to_datetime(df["timestamp"])
     df = df.sort_values(["etf", "timestamp"])
@@ -83,7 +83,7 @@ def build_trade_pairs(df):
     trades = []
 
     # =========================
-    # 2. Process each ETF
+    # 2. 按 ETF 处理
     # =========================
     for etf, g in df.groupby("etf"):
 
@@ -102,7 +102,7 @@ def build_trade_pairs(df):
             pos += qty
 
             # =========================
-            # Open a position: zero to nonzero
+            # 开仓（从0到非0）
             # =========================
             if prev_pos == 0 and pos != 0:
                 entry_time = t
@@ -110,7 +110,7 @@ def build_trade_pairs(df):
                 entry_cost = row.cost
 
             # =========================
-            # Close a position: nonzero to zero
+            # 平仓（从非0到0）
             # =========================
             elif prev_pos != 0 and pos == 0:
 

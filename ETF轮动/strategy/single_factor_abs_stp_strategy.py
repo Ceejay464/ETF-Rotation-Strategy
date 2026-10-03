@@ -9,28 +9,28 @@ class SingleFactorAbsStpStrategy:
         self.factor_df = factor_df
         self.last_target = None
 
-        # 风控参数
+        # Risk control parameters
         self.abs_dd_threshold = abs_dd_threshold
         self.dd_window = dd_window
-        self.dd_breach_days = dd_breach_days # 连续发出平仓信号才进行平仓
+        self.dd_breach_days = dd_breach_days # Close only after consecutive closing signals
         self.cooldown_days_default = cooldown_days
 
-        # 状态机
+        # State machine
         self.stop_flag = False
         self.cooldown_days = 0
         self.stop_trigger_date = None
 
-        # 连续触发计数
+        # Consecutive trigger counter
         self.dd_breach_count = 0
 
     # =========================================================
-    # 主信号函数
+    # Main signal function
     # =========================================================
     def generate_signal(self, timestamp, data, portfolio):
         
         orders = []
         # =====================================================
-        # 1. 更新 equity + drawdown series（从 portfolio）
+        # 1. Update equity and drawdown series from the portfolio
         # =====================================================
         snapshot = data
         close_price_dict = {etf: snapshot[etf]["收盘价"] for etf in snapshot}
@@ -38,28 +38,28 @@ class SingleFactorAbsStpStrategy:
 
         dd_series, current_dd = portfolio.drawdown_series(equity, window=self.dd_window)
 
-        # rolling 判断（最近 window）
+        # Rolling check over the most recent window
         recent_dd = dd_series
 
         # =====================================================
-        # 4. 冷却期
+        # 4. Cooldown period
         # =====================================================
         if self.stop_flag:
 
             self.cooldown_days -= 1
 
-            print(f"冷却期剩余 {self.cooldown_days} 天")
+            print(f"Cooldown remaining {self.cooldown_days}  days")
 
             if self.cooldown_days > 0:
                 return None
 
-            # 冷却结束
-            print("冷却结束，恢复交易")
+            # Cooldown ends
+            print("Cooldown ended; resume trading")
 
             self.stop_flag = False
 
         # =====================================================
-        # 2. 风控逻辑（连续触发）
+        # 2. Risk controls with consecutive triggers
         # =====================================================
         if len(recent_dd) >= self.dd_window:
 
@@ -69,11 +69,11 @@ class SingleFactorAbsStpStrategy:
                 self.dd_breach_count = 0
 
         # =====================================================
-        # 3. 触发止损
+        # 3. Trigger stop loss
         # =====================================================
         if self.dd_breach_count >= self.dd_breach_days:
 
-            print(f"[RISK OFF] 连续 {self.dd_breach_count} 天回撤过大，平仓")
+            print(f"[RISK OFF] Consecutive {self.dd_breach_count}  days of excessive drawdown; close positions")
 
             self.stop_flag = True
             self.cooldown_days = self.cooldown_days_default
@@ -90,7 +90,7 @@ class SingleFactorAbsStpStrategy:
             return {"type": "risk_off", "orders": orders}
 
         # =====================================================
-        # 5. 正常因子逻辑
+        # 5. Normal factor logic
         # =====================================================
         if timestamp not in self.factor_df.index:
             return None
@@ -102,7 +102,7 @@ class SingleFactorAbsStpStrategy:
 
         target_etf = row.idxmax()
 
-        print(f"今日因子最大ETF: {target_etf}, value={row[target_etf]}")
+        print(f"ETF with the highest factor score today: {target_etf}, value={row[target_etf]}")
 
         if self.last_target == target_etf:
             return None

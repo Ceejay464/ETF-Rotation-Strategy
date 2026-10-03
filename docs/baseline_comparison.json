@@ -1,0 +1,26 @@
+[
+  {
+    "project": "ETF-Rotation",
+    "variant": "quantile_delayed",
+    "daily_records": 360,
+    "trade_records": 29,
+    "equity_exact_match": true,
+    "trades_exact_match": true
+  },
+  {
+    "project": "ETF-Rotation",
+    "variant": "plain_delayed",
+    "daily_records": 360,
+    "trade_records": 29,
+    "equity_exact_match": true,
+    "trades_exact_match": true
+  },
+  {
+    "project": "ETF-Rotation",
+    "variant": "absolute_delayed",
+    "daily_records": 360,
+    "trade_records": 33,
+    "equity_exact_match": true,
+    "trades_exact_match": true
+  }
+]

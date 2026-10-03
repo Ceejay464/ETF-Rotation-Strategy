@@ -22,7 +22,7 @@ class InstantEngine:
 
         timeline = sorted(list(next(iter(self.data.values())).index))
 
-        # Convert to Timestamp to avoid strings
+        # 转成 Timestamp（防止字符串）
         timeline = [pd.Timestamp(t) for t in timeline]
 
         if self.start is not None:

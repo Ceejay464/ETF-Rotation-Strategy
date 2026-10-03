@@ -1,9 +1,10 @@
 import pandas as pd
 
 
-class DelayEngine:
+class DelayFullEngine:
 
     def __init__(self, data, strategy, portfolio, start=None, end=None):
+
         self.data = data
         self.strategy = strategy
         self.portfolio = portfolio
@@ -13,21 +14,25 @@ class DelayEngine:
 
         self.timeline = self._build_timeline()
 
-        self.pending_orders = []
+        # =========================
+        # 延迟信号缓存
+        # =========================
+        self.pending_target = None
+
         self.results = []
 
     # =========================================================
-    # build timeline with filter
+    # timeline
     # =========================================================
     def _build_timeline(self):
 
         timeline = sorted(list(next(iter(self.data.values())).index))
         timeline = [pd.Timestamp(t) for t in timeline]
 
-        if self.start is not None:
+        if self.start:
             timeline = [t for t in timeline if t >= self.start]
 
-        if self.end is not None:
+        if self.end:
             timeline = [t for t in timeline if t <= self.end]
 
         return timeline
@@ -51,7 +56,7 @@ class DelayEngine:
     def run(self):
 
         for i in range(len(self.timeline)):
-            
+
             date = self.timeline[i]
             print(date)
 
@@ -60,38 +65,41 @@ class DelayEngine:
             if not snapshot:
                 continue
 
-            price_dict = {etf: snapshot[etf]["开盘价"] for etf in snapshot}
+            # =====================================================
+            # 1️⃣ OPEN PRICE DICT
+            # =====================================================
+            open_price_dict = {etf: snapshot[etf]["开盘价"] for etf in snapshot}
 
             # =====================================================
-            # 1. Execute the previous day's signal at the open price
+            # 2️⃣ 执行上一天信号（全仓）
             # =====================================================
-            for order in self.pending_orders:
+            if self.pending_target is not None:
+                if self.pending_target["type"] == "rebalance":
+                    print("重新开仓")
+                    etf = self.pending_target["target_etf"]
+                    self.portfolio.full_rebalance(timestamp=date, target_etf=etf, price_dict=open_price_dict)
+                    self.pending_target = None
 
-                etf = order["etf"]
-
-                if etf not in snapshot:
-                    continue
-
-                self.portfolio.update_position(
-                    timestamp=date,
-                    etf_name=etf,
-                    quantity=order["quantity"],
-                    price=price_dict[etf]
-                )
-
-            self.pending_orders = []
-
-            # =====================================================
-            # 2. Generate the current signal without executing it
-            # =====================================================
-            self.pending_orders = self.strategy.generate_signal(
-                timestamp=date,
-                data=snapshot,
-                portfolio=self.portfolio
-            )
+                else:
+                    print("回撤太大强制平仓")
+                    orders = self.pending_target["orders"]
+                    for order in orders:
+                        etf = order["etf"]
+                        qty = order["quantity"]  
+                        price = open_price_dict.get(etf, None)                      
+                        self.portfolio.update_position(timestamp=date, etf_name=etf, quantity=qty, price=price)
+                        self.pending_target = None
 
             # =====================================================
-            # 3. Mark to market at the close price
+            # 3️⃣ 当前生成信号（保存，下一天执行）
+            # =====================================================
+            signal = self.strategy.generate_signal( timestamp=date, data=snapshot, portfolio=self.portfolio)
+
+            if signal:
+                self.pending_target = signal
+
+            # =====================================================
+            # 4️⃣ CLOSE PRICE VALUATION
             # =====================================================
             close_price_dict = {etf: snapshot[etf]["收盘价"] for etf in snapshot}
 
